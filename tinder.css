@@ -1,0 +1,59 @@
+body {
+  font-size: 1.2em;
+}
+h5 {
+  height: 60px;
+}
+
+.Ring {
+  height: 107px;
+  width: 107px;
+  border: 10px rgba(233, 233, 233) solid;
+  border-radius: 50%;
+}
+
+.Ring:hover {
+  border: 10px rgb(197, 195, 191) solid;
+  cursor: pointer;
+  height: 117px;
+  width: 117px;
+}
+
+.fa-heart {
+  color: rgb(100, 197, 142);
+  font-size: 3em;
+  margin-top: 27%;
+}
+
+.fa-trash {
+  color: red;
+}
+
+.fa-trash:hover {
+  cursor: pointer;
+  font-size: 2.33333em;
+}
+
+.fa-users-cog:hover {
+  font-size: 2.5em;
+}
+
+.fa-times {
+  margin-top: 22px;
+  font-size: 3em;
+  color: red;
+}
+
+button {
+  border-color: white !important;
+}
+
+button:hover {
+  font-size: 1.2em;
+}
+
+#div1,
+#div2,
+#div3 {
+  margin-left: 64px;
+}

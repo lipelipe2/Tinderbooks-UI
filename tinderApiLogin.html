@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="tinder.css">
+  </script>
+
+  <title>Tinder Books</title>
+</head>
+
+<body class="vh-100 d-flex">
+
+  <div id="login" class="container m-auto text-center">
+    <img
+      src="http://4.bp.blogspot.com/-wfKljZdWhEc/VQCbSwlRJ4I/AAAAAAAAAFY/3CgldU6MNy4/w1200-h630-p-k-no-nu/tinderfordummies.jpg"
+      class="mw-100">
+    <div class="form-group mb-4 mt-5">
+      <label for="username">Enter Username</label>
+      <input type="text" class="form-control" id="username" onkeypress="inputEnter(event, 'login')"
+        placeholder="Username">
+    </div>
+    <button class="btn btn-primary mt-1" onclick="getUserByUsername()">Login / Register</button>
+  </div>
+
+  <div id="main" class="container d-none">
+    <section id="header">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">UpAcademy Tinder</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#settingsToggler"
+          aria-controls="settingsToggler" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="settingsToggler">
+          <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            <li class="nav-item">
+              <span id="currentUsername" class="navbar-text"></span>
+            </li>
+          </ul>
+          <div class="form-inline my-2 my-lg-0">
+            <div class="dropdown">
+              <i class="fas fa-users-cog fa-2x" type="button" data-toggle="dropdown"></i>
+              <span class="caret"></span></button>
+              <ul class="dropdown-menu">
+                <li style="margin-left: 20px;"><a href="#" onclick="logout()">Logout</a></li>
+                <li style="margin-left: 20px;"><a href="#" data-toggle="modal" data-target="#deleteModal">Delete
+                    User</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </section>
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="col-12 modal-title text-center" id="deleteModalLabel"><i class="fas fa-exclamation-triangle"
+                style="color: red; margin-right: 11px;"></i>User Delete</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>Are you sure you want to delete your user?</p>
+            <p>You won't be able to retrieve your information after.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+            <button type="button" class="btn btn-success" data-dismiss="modal" onclick="deleteUser()">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="accordion" id="accordionExample">
+      <div class="bg-success">
+        <div class="card-header" id="headingOne">
+          <div class="row mb-0">
+            <div class="col-sm-3">
+              <button class="btn text-light" type="button" data-toggle="collapse" data-target="#collapseOne"
+                aria-expanded="true" aria-controls="collapseOne">
+                Settings
+              </button>
+            </div>
+            <div class="col-sm-3">
+              <button class="btn btn-outline-success" style="color: white;" onclick="livrosGostados('true')">Livros que
+                gostei</button>
+            </div>
+            <div class="col-sm-3">
+              <button class="btn btn-outline-success" style="color: white; float: right;"
+                onclick="livrosGostados('false')">Livros que nao gostei</button>
+            </div>
+            <div class="col-sm-3 align-self-end">
+              <button class="btn btn-outline-success" style="color: white; float: right;"
+                onclick="getBooksFromGoogle()">Search</button>
+            </div>
+          </div>
+        </div>
+        <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+          <div class="card-body">
+            <input id="h-search" onkeypress="inputEnter(event, 'booksearch')" class="form-control mr-sm-2" type="search"
+              placeholder="Search">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container text-center h-75" id="container">
+      <div class="row w-100 mt-3">
+        <div class="col-sm-4" id="col1"></div>
+        <div class="col-sm-4" id="col2"></div>
+        <div class="col-sm-4" id="col3"></div>
+      </div>
+    </div>
+    <div class="container text-center h-75 d-none" id="containerGostados" style="margin-top: 3%;"></div>
+    <div class="container text-center h-75 d-none" id="containerNaoGostados" style="margin-top: 3%;"></div>
+  </div>
+
+  <!-- Optional JavaScript -->
+  <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+    integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js "
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1 "
+    crossorigin="anonymous "></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js "
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM "
+    crossorigin="anonymous "></script>
+  <script src="https://kit.fontawesome.com/70b1e60bd5.js"></script>
+  <script src="user.js"></script>
+  <script src="book.js"></script>
+  <script src="tinder.js"></script>
+
+  <script>
+    const key = "AIzaSyBtZZOkMPGUpXzhiQGjMoIZB28l7LHP4iA";
+    currentUser = {};
+    let usuario = new User();
+    let todosLivros = [];
+    let todosLivrosIncExcluidos = [];
+    let livro1, livro2, livro3, livro4;
+    let counter = 0;
+
+    /**************************************************
+    * Apaga os dados do utilizador actual para sempre *
+    **************************************************/
+    function deleteUser() {
+      console.log("entrei");
+
+      $.ajax({
+        url: 'https://upacademytinder.herokuapp.com/api/users/' + currentUser.id,
+        type: 'DELETE',
+        success: (user) => {
+          console.log("Usuario apagado");
+        }
+      });
+      currentUser = {};
+      $("#containerGostados").html("");
+      $("#containerNaoGostados").html("");
+      $("#username").val("");
+      stateView();
+    }
+
+    /******************************************************
+    * Escreve a tabela dos livros gostados e nao gostados *
+    * @param gostou livros gostados ou nao gostados       *
+    ******************************************************/
+    function livrosGostados(gostou) {
+      let cont;
+      if (gostou == "true") {
+        $("#container").addClass("d-none");
+        $("#containerNaoGostados").addClass("d-none");
+        $("#containerGostados").removeClass("d-none");
+        cont = $("#containerGostados");
+      }
+      else {
+        $("#container").addClass("d-none");
+        $("#containerGostados").addClass("d-none");
+        $("#containerNaoGostados").removeClass("d-none");
+        cont = $("#containerNaoGostados");
+      }
+      cont.html("");
+      cont.append(`<table class="table" id="tab-${gostou}">
+                      <thead class="thead-dark">
+                        <tr>
+                          <th style="width: 10%"></th>
+                          <th style="width: 20%">Capa</th>
+                          <th style="width: 35%" onclick="sortTable(2,${gostou})">Id do livro</th>
+                          <th style="width: 35%" onclick="sortTable(3,${gostou})">Titulo</th>
+                        </tr>
+                      </thead><tbody id="tbody-${gostou}">`);
+
+      for (let i = 0; i < currentUser.books.length; i++) {
+        if (currentUser.books[i].liked == gostou)
+          $(`#tbody-${gostou}`).append(`<tr id="lin-${i}-${gostou}">
+            <td class="align-middle"><i class="fas fa-trash fa-lg" onclick="deleteBook('#lin-${i}-${gostou}', '${currentUser.books[i].id}')"></i></td>
+            <td><img src=${currentUser.books[i].thumbnail}></td>
+            <td class="align-middle">${currentUser.books[i].bookId}</td>
+            <td class="align-middle">${currentUser.books[i].nome}</td></tr>`);
+      }
+      $(`#tbody-${gostou}`).append(`</tbody>`);
+      cont.append(`</table>`);
+      cont.append(`<div class="row mt-5" id="filtro">
+                      <div class="col-sm-2">
+                        <select class="form-control" id="opcoes">
+                          <option value="2">Id do livro</option>
+                          <option value="3">Titulo</option>
+                        </select>
+                      </div>
+                  <div class="col-sm-10">
+                    <input type="text" class="form-control w-100 mr-5" id="inputFilter" onkeyup="myFunction('${gostou}')" placeholder="Description";>
+                  </div></div>`)
+    }
+
+    /*********************************************
+    * Filtra a tabela                            *
+    * @param gostou qual a tabela a ser filtrada *
+    *********************************************/
+    function myFunction(gostou) {
+      // Declare variables
+      let input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("inputFilter");
+      filter = input.value.toUpperCase();
+      table = document.getElementById(`tab-${gostou}`);
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[$("#opcoes").val()];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+          }
+        }
+      }
+    }
+
+    /*********************************************
+    * Apaga um livro do usuario                  *
+    * @param linha linha a ser apagada da tabela *
+    * @param bookId id do livro a ser apagado    *
+    *********************************************/
+    function deleteBook(linha, bookId) {
+      console.log(linha);
+
+      $(linha).remove();
+      let indice = 0;
+      for (let i = 0; i < currentUser.books.length; i++) {
+        if (currentUser.books[i].id == bookId) {
+          indice = i;
+          break;
+        }
+      }
+      $.ajax({
+        url: 'https://upacademytinder.herokuapp.com/api/users/' + currentUser.id + '/books/' + bookId,
+        type: 'DELETE',
+        success: () => {
+          console.log("Book deleted");
+          currentUser.books.splice(indice, 1);
+        }
+      });
+    }
+
+    /****************************************
+    * Obtem um utilizador pelo seu username *
+    ****************************************/
+    function getUserByUsername() {
+      let username = $("#username ").val();
+      $.get('https://upacademytinder.herokuapp.com/api/users/?filter={"where":{"username":"' + username + '"},"include":"books"}')
+        .done((data) => {
+          (data.length == 0) ? addUser(username) : setCurrentUser(data[0]);
+        }).fail((err) => {
+          console.error("Erro : ", err);
+        });
+    }
+
+    /****************************************
+    * Define o utilizador logado            *
+    * @param user utilizador a ser definido *
+    ****************************************/
+    function setCurrentUser(user) {
+      currentUser = user;
+      stateView();
+    }
+
+    /***********************************************************************
+    * Trata das nossas input boxes se se refere ao login ou ao search book *
+    * @param event evento a ser rastreado                                  *
+    * @param input tipo de input (login ou searchbox)                      *
+    ***********************************************************************/
+    function inputEnter(event, input) {
+      const char = event.code;
+      const key = event.key;
+      if (char === 'Enter' || key === 'Enter') {
+        if (input === "login") {
+          getUserByUsername();
+        } else if (input === "booksearch") {
+          getBooksFromGoogle();
+        }
+      }
+    }
+
+    /***********************************************************************************************
+    * Actualiza a visualizacao do utilizador neste caso ou se nao tiver usuario logado ou se tiver *
+    ***********************************************************************************************/
+    function stateView() {
+      if (currentUser.id != undefined) {
+        $("#login ").addClass("d-none ");
+        $("#main ").removeClass("d-none ");
+        updateHeader();
+      } else {
+        $("#login ").removeClass("d-none ");
+        $("#main ").addClass("d-none ");
+      }
+    }
+
+    /************************************************
+    * Escreve o nome do utilizador actual no header *
+    ************************************************/
+    function updateHeader() {
+      $("#currentUsername").html(`Welcome ${currentUser.username}`);
+    }
+
+    /********************************************
+    * Cria um utilizador novo na base  de dados *
+    ********************************************/
+    function addUser(username) {
+      let tempUser = new User(username);
+      console.log(tempUser);
+
+      $.post('https://upacademytinder.herokuapp.com/api/users',
+        tempUser).done((data) => {
+          setCurrentUser(data);
+          console.log(data);
+        }).fail((err) => {
+          console.error("Erro : ", err);
+        });
+    }
+
+    /**************************************
+    * Apaga o utilizador da base de dados *
+    **************************************/
+    function deleteUserById() {
+      $.ajax({
+        url: 'https://upacademytinder.herokuapp.com/api/users/' +
+          currentUser.id,
+        type: 'DELETE',
+        success: () => {
+          console.log("Deleted ");
+          setCurrentUser();
+        }
+      });
+    }
+
+    /***********************************************
+    * Actualiza o nosso utilizador a base de dados *
+    ***********************************************/
+    function updateUserById() {
+      currentUser.username = $("#currentUsername ").val();
+      $.ajax({
+        url: 'https://upacademytinder.herokuapp.com/api/users/' + currentUser.id,
+        type: 'PUT',
+        data: currentUser,
+        success: (user) => {
+          console.log("Updated ");
+          setCurrentUser(user);
+        }
+      });
+    }
+
+    /*******************************************
+    * Adiciona um livro que o utilizador goste *
+    *******************************************/
+    function addBook(id, liked, index) {
+      let tempBook;
+      console.log("entrei");
+
+
+      if (id == livro1.bookId)
+        tempBook = new Book(livro1.bookId, livro1.nome, livro1.description, livro1.thumbnail, liked);
+      else if (id == livro2.bookId)
+        tempBook = new Book(livro2.bookId, livro2.nome, livro2.description, livro2.thumbnail, liked);
+      else if (id == livro3.bookId)
+        tempBook = new Book(livro3.bookId, livro3.nome, livro3.description, livro3.thumbnail, liked);
+      else if (id == livro4.bookId)
+        tempBook = new Book(livro4.bookId, livro4.nome, livro4.description, livro4.thumbnail, liked);
+      else
+        console.log("Erro ao criar livro");
+
+      console.log(index);
+      livro4 = todosLivros.shift();
+      console.log(livro4);
+
+      $.post('https://upacademytinder.herokuapp.com/api/users/' + currentUser.id + '/books',
+        tempBook).done((data) => {
+          $("#col" + index).html("");
+          console.log(`Livro adicionado: ${data}`);
+          currentUser.books.push(data);
+          let otrIndex = index + 3;
+          $("#col" + index).append(`<div class="demo__card"><div class="row"><div class="col-sm-12">
+      <img src="${livro4.thumbnail}" alt="${livro4.nome}" class="w-75" style="height: 255px"></div>
+      <div class="col-sm-12 mt-3"><h5>${livro4.nome}</h5></div>
+      <div class="col-sm-12"><p style="height: 120px; overflow: auto;">${livro4.description}</p></div></div>
+      <div class="row">
+      <div class="col-sm-6"><div class="Ring" id="div${index}" onclick="addBook('${livro4.bookId}', true, ${index})"><i class="fas fa-heart"></i></div></div>
+      <div class="col-sm-6"><div class="Ring" id="div${otrIndex}" onclick="addBook('${livro4.bookId}', false, ${index})"><i class="fas fa-times"></i></div></div></div>`);
+        }).fail((err) => {
+          console.error("Erro : ", err);
+        });
+    }
+
+    /**************************************************************************
+    * Verifica se o livro já foi adicionado anteriormente ao nosso utilizador *
+    * @param id id do livro                                                   *
+    **************************************************************************/
+    function alreadyHasBook(id) {
+      return currentUser.books.findIndex(e => e.bookId == id) != -1;
+    }
+
+    /********************************************************************************************
+    * Recebe os livros da api da google e escreve no meu array de acordo com o meu objecto book *
+    ********************************************************************************************/
+    function getBooksFromGoogle() {
+      $("#container").removeClass("d-none");
+      $("#containerGostados").addClass("d-none");
+      $("#containerNaoGostados").addClass("d-none");
+      let procura = $("#h-search").val();
+      console.log("Vou pedir livros a google");
+      $.get("https://www.googleapis.com/books/v1/volumes?q='" + procura + "'&maxResults=40&startIndex=" + counter + "&key=" + key)
+        .done(function (data) {
+          console.log(data);
+          data.items.forEach(function (element) {
+            if (element.volumeInfo.imageLinks != undefined && !alreadyHasBook(element.id) && !alreadyHasBookExc(element.id)) {
+              todosLivros.push(new Book(element.id, element.volumeInfo.title, element.volumeInfo.description, element.volumeInfo.imageLinks.thumbnail));
+              todosLivrosIncExcluidos.push(new Book(element.id, element.volumeInfo.title, element.volumeInfo.description, element.volumeInfo.imageLinks.thumbnail));
+            }
+            else if (element.volumeInfo.imageLinks == undefined && !alreadyHasBook(element.id) && !alreadyHasBookExc(element.id)) {
+              todosLivros.push(new Book(element.id, element.volumeInfo.title, element.volumeInfo.description, "images/thumb.jpeg"));
+              todosLivrosIncExcluidos.push(new Book(element.id, element.volumeInfo.title, element.volumeInfo.description, "images/thumb.jpeg"));
+            }
+            else
+              console.log(`livro ja apareceu ao utilizador${element.id}`);
+          });
+          counter = counter + 40;
+          if ($("#col1").children().val() == undefined)
+            showThumb();
+          console.log("Todos Livros: ");
+          console.log(todosLivros);
+          console.log("Todos Livros exc: ");
+          console.log(todosLivrosIncExcluidos);
+          console.log("----------------------------------------- NOVO LOG ----------------------------------------------");
+          if (todosLivros.length <= 4)
+            getBooksFromGoogle();
+        })
+        .fail(function (data) {
+          console.error("Erro : ", data);
+        });
+    }
+
+    /************************************************
+    * Verifica se o livro ja apareceu ao utilizador *
+    ************************************************/
+    function alreadyHasBookExc(id) {
+      return todosLivrosIncExcluidos.findIndex(e => e.bookId == id) != -1;
+    }
+
+    /*******************************
+    * Mostra os 3 primeiros livros *
+    *******************************/
+    function showThumb() {
+      if (todosLivros.length < 4)
+        alert("Por favor pesquise mais livros");
+      else {
+        livro1 = todosLivros.shift();
+        livro2 = todosLivros.shift();
+        livro3 = todosLivros.shift();
+
+        let col1 = $("#col1"), col2 = $("#col2"), col3 = $("#col3");
+
+        $("#col1").html("");
+        $("#col2").html("");
+        $("#col3").html("");
+        $("#col1").append(`<div class="demo__card"><div class="row">
+            <div class="col-sm-12">
+            <img src="${livro1.thumbnail}" alt="${livro1.nome}" class="w-75" style="height: 255px"></div>
+            <div class="col-sm-12 mt-3"><h5>${livro1.nome}</h5></div>
+            <div class="col-sm-12"><p style="height: 120px; overflow: auto;">${livro1.description}</p></div></div>
+            <div class="row">
+            <div class="col-sm-6"><div class="Ring" id="div1" onclick="addBook('${livro1.bookId}', true, 1)"><i class="fas fa-heart"></i></div></div>
+            <div class="col-sm-6"><div class="Ring" id="div4" onclick="addBook('${livro1.bookId}', false, 1)"><i class="fas fa-times"></i></div></div></div>`);
+        $("#col2").append(`<div class="demo__card"><div class="row"><div class="col-sm-12">
+            <img src="${livro2.thumbnail}" alt="${livro2.nome}" class="w-75" style="height: 255px"></div>
+            <div class="col-sm-12 mt-3"><h5>${livro2.nome}</h5></div>
+            <div class="col-sm-12"><p style="height: 120px; overflow: auto;">${livro2.description}</p></div></div>
+            <div class="row">
+            <div class="col-sm-6"><div class="Ring" id="div2" onclick="addBook('${livro2.bookId}', true, 2)"><i class="fas fa-heart"></i></div></div>
+            <div class="col-sm-6"><div class="Ring" id="div5" onclick="addBook('${livro2.bookId}', false, 2)"><i class="fas fa-times"></i></div></div></div>`);
+        $("#col3").append(`<div class="demo__card"><div class="row"><div class="col-sm-12">
+            <img src="${livro3.thumbnail}" alt="${livro3.nome}" class="w-75" style="height: 255px"></div>
+            <div class="col-sm-12 mt-3"><h5>${livro3.nome}</h5></div>
+            <div class="col-sm-12"><p style="height: 120px; overflow: auto;">${livro3.description}</p></div></div>
+            <div class="row">
+            <div class="col-sm-6"><div class="Ring" id="div3" onclick="addBook('${livro3.bookId}', true, 3)"><i class="fas fa-heart"></i></div></div>
+            <div class="col-sm-6"><div class="Ring" id="div6" onclick="addBook('${livro3.bookId}', false, 3)"><i class="fas fa-times"></i></div></div></div>`);
+      }
+      //<div class="col-sm-6"><i class="fab fa-gratipay fa-7x" style="color: green" onclick="addBook('${livro2.bookId}', true,2)"></i></div>
+    }
+
+    /************************
+    * Faz logout do sistema *
+    ************************/
+    function logout() {
+      currentUser = {};
+      $("#containerGostados").html("");
+      $("#containerNaoGostados").html("");
+      $("#username").val("");
+      stateView();
+    }
+
+    /*******************************************
+    * Ordena a tabela por coluna               *
+    * @param n indice da coluna a ser ordenado *
+    *******************************************/
+    function sortTable(n, gostou) {
+      let table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+      table = document.getElementById(`tab-${gostou}`);
+      switching = true;
+      // Set the sorting direction to ascending:
+      dir = "asc";
+      /* Make a loop that will continue until
+      no switching has been done: */
+      while (switching) {
+        // Start by saying: no switching is done:
+        switching = false;
+        rows = table.rows;
+        /* Loop through all table rows (except the
+        first, which contains table headers): */
+        for (i = 1; i < (rows.length - 1); i++) {
+          // Start by saying there should be no switching:
+          shouldSwitch = false;
+          /* Get the two elements you want to compare,
+          one from current row and one from the next: */
+          x = rows[i].getElementsByTagName("TD")[n];
+          y = rows[i + 1].getElementsByTagName("TD")[n];
+          /* Check if the two rows should switch place,
+          based on the direction, asc or desc: */
+          if (dir == "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          } else if (dir == "desc") {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              // If so, mark as a switch and break the loop:
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+        if (shouldSwitch) {
+          /* If a switch has been marked, make the switch
+          and mark that a switch has been done: */
+          rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+          switching = true;
+          // Each time a switch is done, increase this count by 1:
+          switchcount++;
+        } else {
+          /* If no switching has been done AND the direction is "asc",
+          set the direction to "desc" and run the while loop again. */
+          if (switchcount == 0 && dir == "asc") {
+            dir = "desc";
+            switching = true;
+          }
+        }
+      }
+    }
+
+  </script>
+</body>
+
+</html>
